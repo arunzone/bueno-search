@@ -23,3 +23,7 @@ classDiagram
       }
 ```
 
+
+### Assumptions
+* Date fields are dealt with UTC, not considered for any timezones for simplicity
+
