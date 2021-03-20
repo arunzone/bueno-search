@@ -37,7 +37,7 @@ public class InMemoryIndexService {
     }
 
     return query.getTerms().stream()
-        .map(index::get)
+        .map(term -> index.getOrDefault(term, Set.of()))
         .flatMap(Collection::stream)
         .skip(query.getOffset())
         .limit(query.getLimit())

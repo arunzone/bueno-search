@@ -133,6 +133,22 @@ class InMemoryIndexServiceTest {
   }
 
   @Test
+  void shouldReturnDeviceIdWhenOnlyOneMatches() {
+    List<Term> terms = List.of(
+        new Term(
+            "sensor.readingAt",
+            "2021-02-02T23:55Z"),
+        new Term(
+            "sensor.unit",
+            "%XX")
+    );
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(2, 0, terms);
+    Set<String> ids = service.search(query);
+
+    assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
+  }
+
+  @Test
   void shouldReturnMultipleDeviceIdForAllMatchingSensorReadingValueOrSensorUnit() {
     List<Term> terms = List.of(
         new Term(
