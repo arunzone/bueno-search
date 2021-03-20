@@ -6,6 +6,7 @@ import au.com.bueno.search.index.query.SimpleAnyMatchQuery;
 import au.com.bueno.search.index.query.Term;
 import au.com.bueno.search.index.query.TermBuilder;
 import au.com.bueno.search.repository.Repository;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -34,8 +35,16 @@ class InMemoryIndexServiceTest {
   }
 
   @Test
+  void shouldReturnAllDeviceIdForEmptySearchTerm() {
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(10, 0, List.of());
+    Set<String> ids = service.search(query);
+
+    assertThat(ids, containsInAnyOrder("e07c57cc-cf7d-4cf2-959e-b0d506929aae", "e07c57cc-cf7d-4cf2-959e-b0d506929aaf"));
+  }
+
+  @Test
   void shouldReturnDeviceIdForMatchingDeviceName() {
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, List.of(new Term("device.name", "_AHU1_MAIN")));
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, 0, List.of(new Term("device.name", "_AHU1_MAIN")));
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -46,7 +55,7 @@ class InMemoryIndexServiceTest {
     List<Term> terms = List.of(new Term(
         "device.id",
         "e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -57,7 +66,7 @@ class InMemoryIndexServiceTest {
     List<Term> terms = List.of(new Term(
         "sensor.type",
         "NUMBER"));
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -68,7 +77,7 @@ class InMemoryIndexServiceTest {
     List<Term> terms = List.of(new Term(
         "sensor.name",
         "OUTDOOR_HUMID"));
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -79,7 +88,7 @@ class InMemoryIndexServiceTest {
     List<Term> terms = List.of(new Term(
         "sensor.unit",
         "%RH"));
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -90,7 +99,7 @@ class InMemoryIndexServiceTest {
     List<Term> terms = List.of(new Term(
         "sensor.readingValue",
         "34.52"));
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -101,7 +110,7 @@ class InMemoryIndexServiceTest {
     List<Term> terms = List.of(new Term(
         "sensor.readingAt",
         "2021-02-02T23:55Z"));
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(1, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -117,7 +126,7 @@ class InMemoryIndexServiceTest {
             "sensor.unit",
             "%RH")
     );
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(2, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(2, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, contains("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
@@ -133,10 +142,26 @@ class InMemoryIndexServiceTest {
             "sensor.unit",
             "%ZH")
     );
-    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(2, terms);
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(2, 0, terms);
     Set<String> ids = service.search(query);
 
     assertThat(ids, containsInAnyOrder("e07c57cc-cf7d-4cf2-959e-b0d506929aae", "e07c57cc-cf7d-4cf2-959e-b0d506929aaf"));
+  }
+
+  @Test
+  void shouldReturnSingleDeviceIdForAllMatchingTermByOffsetAndLimit() {
+    List<Term> terms = List.of(
+        new Term(
+            "sensor.readingAt",
+            "2021-02-02T23:55Z"),
+        new Term(
+            "sensor.unit",
+            "%ZH")
+    );
+    SimpleAnyMatchQuery query = new SimpleAnyMatchQuery(2, 1, terms);
+    Set<String> ids = service.search(query);
+
+    assertThat(ids.size(), Is.is(1));
   }
 
   private Device deviceEntity() {

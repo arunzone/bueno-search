@@ -20,16 +20,26 @@ public class InMemoryIndexService {
   private final InMemoryIndexBuilder inMemoryIndexBuilder;
   private final Map<Term, Set<String>> index = new HashMap<>();
 
-  public InMemoryIndexService(@Autowired Repository repository, @Autowired InMemoryIndexBuilder inMemoryIndexBuilder) {
+  public InMemoryIndexService(@Autowired Repository<Device, String> repository, @Autowired InMemoryIndexBuilder inMemoryIndexBuilder) {
     this.repository = repository;
     this.inMemoryIndexBuilder = inMemoryIndexBuilder;
   }
 
   public Set<String> search(SimpleAnyMatchQuery query) {
     indexIfNeeded();
+
+    if (query.getTerms().isEmpty()) {
+      return repository.findAll().stream()
+          .skip(query.getOffset())
+          .limit(query.getLimit())
+          .map(Device::getId)
+          .collect(Collectors.toSet());
+    }
+
     return query.getTerms().stream()
-        .map(term -> index.get(term))
+        .map(index::get)
         .flatMap(Collection::stream)
+        .skip(query.getOffset())
         .limit(query.getLimit())
         .collect(Collectors.toSet());
   }
