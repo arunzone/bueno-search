@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@org.springframework.stereotype.Repository
 public class DeviceRepository implements Repository<Device, String> {
 
   private final CsvFileInputReader csvFileInputReader;
