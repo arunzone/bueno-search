@@ -1,6 +1,6 @@
 package au.com.bueno.search.repository.file.csv.file.csv;
 
-import au.com.bueno.search.repository.file.csv.InvalidInputException;
+import au.com.bueno.search.repository.file.csv.InvalidInputFileException;
 import au.com.bueno.search.repository.file.csv.file.csv.dto.Device;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -34,8 +34,7 @@ public class CsvFileInputReader {
 
       return csvReader.parse();
     } catch (Exception e) {
-      e.printStackTrace();
-      throw new InvalidInputException(e.getMessage());
+      throw new InvalidInputFileException(String.format("Invalid input data file: %s", fileName()));
     }
   }
 

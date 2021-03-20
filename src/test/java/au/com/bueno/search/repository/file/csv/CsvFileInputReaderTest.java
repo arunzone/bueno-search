@@ -11,7 +11,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsIterableContaining.hasItem;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,5 +52,15 @@ class CsvFileInputReaderTest {
     List<Device> devices = csvFileInputReader.read();
 
     assertThat(devices.size(), Is.is(1728));
+  }
+
+  @Test
+  void shouldThrowExceptionFoInvalidFile() {
+    Environment env = mock(Environment.class);
+    CsvFileInputReader csvFileInputReader = new CsvFileInputReader(env);
+
+    InvalidInputFileException invalidInputFileException = assertThrows(InvalidInputFileException.class, () -> csvFileInputReader.read());
+
+    assertThat(invalidInputFileException.getMessage(), is("Invalid input data file: null"));
   }
 }
