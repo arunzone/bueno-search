@@ -6,6 +6,7 @@ import au.com.bueno.search.repository.file.csv.file.csv.CsvFileInputReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,14 @@ public class DeviceRepository implements Repository<Device, String> {
 
   @Override
   public Device findById(String id) {
+    loadDataWhenRequired();
+    return devices.get(id);
+  }
+
+  private void loadDataWhenRequired() {
     if (devices.isEmpty()) {
       loadDevices();
     }
-    return devices.get(id);
   }
 
   private void loadDevices() {
@@ -52,4 +57,8 @@ public class DeviceRepository implements Repository<Device, String> {
     );
   }
 
+  public Collection<Device> findAll() {
+    loadDataWhenRequired();
+    return devices.values();
+  }
 }

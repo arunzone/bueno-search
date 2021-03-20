@@ -9,6 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,7 +27,7 @@ class DeviceSearchControllerTest {
   private DeviceService service;
 
   @Test
-  public void greetingShouldReturnMessageFromService() throws Exception {
+  public void shouldReturnDeviceFromService() throws Exception {
     DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
     deviceResponseDto.setId("abc");
     deviceResponseDto.setName("name");
@@ -36,5 +39,20 @@ class DeviceSearchControllerTest {
             .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.name", is("name")))
         .andExpect(jsonPath("$.id", is("abc")));
+  }
+
+  @Test
+  public void shouldReturnAllDevicesFromService() throws Exception {
+    DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
+    deviceResponseDto.setId("abc");
+    deviceResponseDto.setName("name");
+    when(service.findAll(Map.of())).thenReturn(List.of(deviceResponseDto));
+    this.mockMvc.perform(get("/devices")
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content()
+            .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$[0].name", is("name")))
+        .andExpect(jsonPath("$[0].id", is("abc")));
   }
 }

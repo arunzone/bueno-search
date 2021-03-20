@@ -6,8 +6,9 @@ import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import lombok.NoArgsConstructor;
 
-import java.io.IOException;
 import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 @NoArgsConstructor
 public class TagsConverter extends AbstractBeanField {
@@ -17,9 +18,9 @@ public class TagsConverter extends AbstractBeanField {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       return objectMapper.readValue(value, List.class);
-    } catch (IOException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
-    return null;
+    return emptyList();
   }
 }

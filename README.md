@@ -1,7 +1,9 @@
 # bueno-search
 
 ## Design thoughts
-### Domain 
+
+### Domain
+
 A device comprises multiple sensors
 
 A sensor has its own attributes like name, type,etc...
@@ -23,7 +25,9 @@ classDiagram
       }
 ```
 
-
 ### Assumptions
+
 * Date fields are dealt with UTC, not considered for any timezones for simplicity
+* Unique devices associated with `Id`
+* Added a device with another Id to test search by different Id
 

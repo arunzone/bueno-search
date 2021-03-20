@@ -51,7 +51,7 @@ class CsvFileInputReaderTest {
 
     List<Device> devices = csvFileInputReader.read();
 
-    assertThat(devices.size(), Is.is(1728));
+    assertThat(devices.size(), Is.is(1729));
   }
 
   @Test

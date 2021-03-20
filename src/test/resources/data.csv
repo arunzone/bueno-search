@@ -1727,3 +1727,4 @@ e07c57cc-cf7d-4cf2-959e-b0d506929aae,_AHU1_MAIN,FAN_STATUS,BOOLEAN,"[""fan"", ""
 e07c57cc-cf7d-4cf2-959e-b0d506929aae,_AHU1_MAIN,FAN_STATUS,BOOLEAN,"[""fan"", ""his"", ""discharge"", ""sensor"", ""air"", ""status""]",2020-04-21T15:47:28+00,2020-07-29T16:28:36+00,,2021-02-01T00:10:00+00,1
 e07c57cc-cf7d-4cf2-959e-b0d506929aae,_AHU1_MAIN,FAN_STATUS,BOOLEAN,"[""fan"", ""his"", ""discharge"", ""sensor"", ""air"", ""status""]",2020-04-21T15:47:28+00,2020-07-29T16:28:36+00,,2021-02-01T00:05:00+00,1
 e07c57cc-cf7d-4cf2-959e-b0d506929aae,_AHU1_MAIN,FAN_STATUS,BOOLEAN,"[""fan"", ""his"", ""discharge"", ""sensor"", ""air"", ""status""]",2020-04-21T15:47:28+00,2020-07-29T16:28:36+00,,2021-02-01T00:00:00+00,1
+e07c57cc-cf7d-4cf2-959e-b0d506929aaf,_AHU1_MAIN,FAN_STATUS,BOOLEAN,"[""fan"", ""his"", ""discharge"", ""sensor"", ""air"", ""status""]",2020-04-21T15:47:28+00,2020-07-29T16:28:36+00,,2021-02-01T00:00:00+00,1

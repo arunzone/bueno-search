@@ -10,8 +10,11 @@ import org.modelmapper.ModelMapper;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,6 +31,40 @@ class DeviceServiceTest {
     DeviceResponseDto deviceResponseDto = deviceService.findById("id");
 
     assertThat(deviceResponseDto, is(deviceResponseDto()));
+  }
+
+  @Test
+  void shouldReturnNullWhenDeviceNotFound() {
+    DeviceRepository deviceRepository = mock(DeviceRepository.class);
+    DeviceService deviceService = new DeviceService(new ModelMapper(), deviceRepository);
+
+    DeviceResponseDto deviceResponseDto = deviceService.findById("id");
+
+    assertThat(deviceResponseDto, is(nullValue()));
+  }
+
+  @Test
+  void shouldReturnPagedDevicesWithDefaultLimit() {
+    DeviceRepository deviceRepository = mock(DeviceRepository.class);
+    DeviceService deviceService = new DeviceService(new ModelMapper(), deviceRepository);
+
+    when(deviceRepository.findAll()).thenReturn(List.of(deviceEntity()));
+
+    List<DeviceResponseDto> deviceResponseDto = deviceService.findAll(Map.of());
+
+    assertThat(deviceResponseDto, contains(deviceResponseDto()));
+  }
+
+  @Test
+  void shouldReturnPagedDevicesWithSpecifiedLimit() {
+    DeviceRepository deviceRepository = mock(DeviceRepository.class);
+    DeviceService deviceService = new DeviceService(new ModelMapper(), deviceRepository);
+
+    when(deviceRepository.findAll()).thenReturn(List.of(deviceEntity(), deviceEntity()));
+
+    List<DeviceResponseDto> deviceResponseDto = deviceService.findAll(Map.of("pageSize", "1"));
+
+    assertThat(deviceResponseDto, contains(deviceResponseDto()));
   }
 
   private DeviceResponseDto deviceResponseDto() {
