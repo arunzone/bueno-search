@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -65,6 +66,19 @@ class DeviceRepositoryTest {
     when(csvFileInputReader.read()).thenReturn(devices);
 
     Collection<Device> device = deviceRepository.findAll();
+
+    assertThat(device, contains(deviceEntity()));
+  }
+
+  @Test
+  void shouldReturnMatchingDevices() {
+    CsvFileInputReader csvFileInputReader = mock(CsvFileInputReader.class);
+    DeviceRepository deviceRepository = new DeviceRepository(csvFileInputReader);
+
+    List<au.com.bueno.search.repository.file.csv.file.csv.dto.Device> devices = List.of(deviceDto());
+    when(csvFileInputReader.read()).thenReturn(devices);
+
+    Collection<Device> device = deviceRepository.findByIds(Set.of("e07c57cc-cf7d-4cf2-959e-b0d506929aae"));
 
     assertThat(device, contains(deviceEntity()));
   }

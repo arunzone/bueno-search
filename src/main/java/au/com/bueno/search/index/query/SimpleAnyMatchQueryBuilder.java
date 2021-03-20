@@ -1,10 +1,13 @@
 package au.com.bueno.search.index.query;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Component
 public class SimpleAnyMatchQueryBuilder {
   public static final String DEFAULT_LIMIT = "10";
   public static final String DEFAULT_OFFSET = "0";

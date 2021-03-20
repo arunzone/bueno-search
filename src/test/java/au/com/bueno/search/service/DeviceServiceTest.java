@@ -4,13 +4,20 @@ import au.com.bueno.search.controller.dto.DeviceResponseDto;
 import au.com.bueno.search.controller.dto.SensorResponseDto;
 import au.com.bueno.search.entity.Device;
 import au.com.bueno.search.entity.Sensor;
+import au.com.bueno.search.index.InMemoryIndexService;
+import au.com.bueno.search.index.query.SimpleAnyMatchQuery;
+import au.com.bueno.search.index.query.SimpleAnyMatchQueryBuilder;
 import au.com.bueno.search.repository.DeviceRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,11 +28,22 @@ import static org.mockito.Mockito.when;
 
 class DeviceServiceTest {
 
+  @Mock
+  private DeviceRepository deviceRepository;
+  @Mock
+  private InMemoryIndexService inMemoryIndexService;
+  @Mock
+  private SimpleAnyMatchQueryBuilder simpleAnyMatchQueryBuilder;
+  private DeviceService deviceService;
+
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    deviceService = new DeviceService(new ModelMapper(), deviceRepository, inMemoryIndexService, simpleAnyMatchQueryBuilder);
+  }
+
   @Test
   void shouldReturnDeviceById() {
-    DeviceRepository deviceRepository = mock(DeviceRepository.class);
-    DeviceService deviceService = new DeviceService(new ModelMapper(), deviceRepository);
-
     when(deviceRepository.findById("id")).thenReturn(deviceEntity());
 
     DeviceResponseDto deviceResponseDto = deviceService.findById("id");
@@ -35,36 +53,23 @@ class DeviceServiceTest {
 
   @Test
   void shouldReturnNullWhenDeviceNotFound() {
-    DeviceRepository deviceRepository = mock(DeviceRepository.class);
-    DeviceService deviceService = new DeviceService(new ModelMapper(), deviceRepository);
-
     DeviceResponseDto deviceResponseDto = deviceService.findById("id");
 
     assertThat(deviceResponseDto, is(nullValue()));
   }
 
   @Test
-  void shouldReturnPagedDevicesWithDefaultLimit() {
-    DeviceRepository deviceRepository = mock(DeviceRepository.class);
-    DeviceService deviceService = new DeviceService(new ModelMapper(), deviceRepository);
+  void shouldReturnMatchingDevices() {
+    Map<String, String> parameters = mock(Map.class);
+    SimpleAnyMatchQuery query = mock(SimpleAnyMatchQuery.class);
 
-    when(deviceRepository.findAll()).thenReturn(List.of(deviceEntity()));
+    when(simpleAnyMatchQueryBuilder.queryFrom(parameters)).thenReturn(query);
+    Set<String> ids = Set.of("e07c57cc-cf7d-4cf2-959e-b0d506929aae");
+    when(inMemoryIndexService.search(query)).thenReturn(ids);
+    when(deviceRepository.findByIds(ids)).thenReturn(List.of(deviceEntity()));
+    List<DeviceResponseDto> deviceResponseDtos = deviceService.findAll(parameters);
 
-    List<DeviceResponseDto> deviceResponseDto = deviceService.findAll(Map.of());
-
-    assertThat(deviceResponseDto, contains(deviceResponseDto()));
-  }
-
-  @Test
-  void shouldReturnPagedDevicesWithSpecifiedLimit() {
-    DeviceRepository deviceRepository = mock(DeviceRepository.class);
-    DeviceService deviceService = new DeviceService(new ModelMapper(), deviceRepository);
-
-    when(deviceRepository.findAll()).thenReturn(List.of(deviceEntity(), deviceEntity()));
-
-    List<DeviceResponseDto> deviceResponseDto = deviceService.findAll(Map.of("pageSize", "1"));
-
-    assertThat(deviceResponseDto, contains(deviceResponseDto()));
+    assertThat(deviceResponseDtos, contains(deviceResponseDto()));
   }
 
   private DeviceResponseDto deviceResponseDto() {

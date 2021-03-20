@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Repository
 public class DeviceRepository implements Repository<Device, String> {
@@ -60,5 +62,10 @@ public class DeviceRepository implements Repository<Device, String> {
   public Collection<Device> findAll() {
     loadDataWhenRequired();
     return devices.values();
+  }
+
+  public Collection<Device> findByIds(Set<String> ids) {
+    loadDataWhenRequired();
+    return ids.stream().map(devices::get).collect(Collectors.toList());
   }
 }
