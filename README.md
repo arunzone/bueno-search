@@ -10,10 +10,10 @@ A sensor has its own attributes like name, type,etc...
 
 ```mermaid
 classDiagram
-      Animal --* Duck
-      Animal : +int device_id
-      Animal : +String device_name
-      class Duck{
+      Device --* Sensor
+      Device : +int device_id
+      Device : +String device_name
+      class Sensor{
           +String sensor_name
           +String sensor_type
           +List sensor_tags
@@ -25,11 +25,26 @@ classDiagram
       }
 ```
 
-### Assumptions
+```mermaid
+graph LR
+subgraph App
+    Ct[controller]-->S[Service]-->R[Repository]
+    S --> Q[QueryBuilder]
+    Q --> I[In-MemoryIndex]
+    R --> I
+    end
+    A[Browser] -->|/devices| Ct
+```
+
+Gave a shot on using springboot to build application exposing API as REST endpoints
+
+### Assumptions & Tradeoffs
 
 * Date fields are dealt with UTC, not considered for any timezones for simplicity
 * Unique devices associated with `Id`
 * Added a device with another Id to test search by different Id
+* All the date are read from csv file and kept in memory to keep it simple
+* Used in-memory indexing for performant search, with memory tradeoff
 
 ### endpoints
 
@@ -51,3 +66,30 @@ classDiagram
 
 * Search query is same for both devices and sensor endpoints
 * search terms are the attributes of the object with `device` or `sensor` prefix
+
+### Prerequisite
+
+* Java 11,
+* IDE (optional)
+* gradle (depends)
+
+## How to Run Application
+
+Note: Data file is read from environment variable `DATA_FILE`
+
+### Using IDE
+
+* Import project into IDE
+* set environment variable for data file
+  > DATA_FILE=/Users/xyz/projects/bueno-search/src/test/resources/data.csv
+* Run SearchApplication.java
+* I will start webapp in `8080` port
+* endpoint is accessible by http://localhost:8080/devices
+
+### Run Test and code coverage check
+
+* Navigate inside project directory
+* `./gradlew clean build` or `./gradlew clean test jacocoTestReport`
+* generate jacoco report - `./gradlew jacocoTestReport`
+
+  
