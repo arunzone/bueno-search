@@ -42,7 +42,7 @@ class DeviceSearchControllerTest {
   }
 
   @Test
-  public void shouldReturnAllDevicesFromService() throws Exception {
+  public void shouldReturnAllMatchingDevicesFromService() throws Exception {
     DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
     deviceResponseDto.setId("abc");
     deviceResponseDto.setName("name");
