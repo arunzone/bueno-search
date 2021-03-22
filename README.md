@@ -86,6 +86,27 @@ Note: Data file is read from environment variable `DATA_FILE`
 * I will start webapp in `8080` port
 * endpoint is accessible by http://localhost:8080/devices
 
+### command line
+
+Jar file can be generated using command `./gradlew clean build` from project folder and is available in `build/libs`
+directory
+
+* java(JRE/JDK) available using jar
+  > DATA_FILE=/Users/arun/projects/bueno-search/src/test/resources/data.csv java -jar search-0.0.1-SNAPSHOT.jar
+* java(JRE/JDK) available from source code
+  > DATA_FILE=/Users/arun/projects/bueno-search/src/test/resources/data.csv ./gradlew bootRun
+* Java not available but docker here you go - provided `search-0.0.1-SNAPSHOT.jar` and `data.csv` are available in
+  current working directory
+  > docker run --env DATA_FILE=/home/data.csv -p 8080:8080 -v ${PWD}:/home -it adoptopenjdk/openjdk11 java -jar /home/search-0.0.1-SNAPSHOT.jar
+
+### Run Test and code coverage check
+
+* Navigate inside project directory
+* Simple
+  > `./gradlew clean build` or `./gradlew clean test jacocoTestReport`
+* generate jacoco report
+  > ./gradlew jacocoTestReport
+
 ### Run Test and code coverage check
 
 * Navigate inside project directory

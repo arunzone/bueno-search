@@ -34,6 +34,10 @@ dependencies {
 
 }
 
+bootRun {
+    main = 'au.com.bueno.search.SearchApplication'
+}
+
 test {
     useJUnitPlatform()
 }
