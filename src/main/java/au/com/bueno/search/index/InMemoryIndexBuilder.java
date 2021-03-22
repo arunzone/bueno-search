@@ -73,7 +73,7 @@ public class InMemoryIndexBuilder {
   }
 
   private <T> void indexField(T reference, Field field, String id) throws IllegalAccessException {
-    Term term = termBuilder.withReference(reference).withField(field).build();
+    Term term = termBuilder.build(reference, field);
     index.putIfAbsent(term, new HashSet<>());
     index.get(term).add(id);
   }

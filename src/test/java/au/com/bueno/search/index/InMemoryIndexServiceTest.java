@@ -30,7 +30,7 @@ class InMemoryIndexServiceTest {
   void setUp() {
     MockitoAnnotations.openMocks(this);
 
-    service = new InMemoryIndexService(repository, new InMemoryIndexBuilder(new TermBuilder<Device>()));
+    service = new InMemoryIndexService(repository, new InMemoryIndexBuilder(new TermBuilder()));
     when(repository.findAll()).thenReturn(List.of(deviceEntity(), anotherDeviceEntity()));
   }
 
